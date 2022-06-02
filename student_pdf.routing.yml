@@ -1,0 +1,11 @@
+student_pdf.pdf_version:
+  path: '/student/{student}/pdf_version'
+  defaults:
+    _controller: '\Drupal\student_pdf\Controller\StudentPdfController::build'
+    _title: 'Pdf version student'
+  requirements:
+    _role: 'administrator'
+  options:
+    parameters:
+      student:
+        type: entity:student
