@@ -1,0 +1,13 @@
+{
+    "name": "student_pdf",
+    "type": "drupal-module",
+    "description": "The module implements an entity for a list of students with the ability to export to pdf",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/student_pdf",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/student_pdf",
+        "source": "http://cgit.drupalcode.org/student_pdf",
+    },
+}

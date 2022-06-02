@@ -1,0 +1,14 @@
+
+# Student menu items definition
+entity.student.collection:
+  title: 'Students list'
+  route_name: entity.student.collection
+  description: 'List Student entities'
+  parent: system.admin_structure
+  weight: 100
+
+student.admin.structure.settings:
+  title: 'Student settings'
+  description: 'Configure Student entities'
+  route_name: student.settings
+  parent: system.admin_structure

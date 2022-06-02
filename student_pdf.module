@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains student_pdf.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function student_pdf_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the student_pdf module.
+    case 'help.page.student_pdf':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The module implements an entity for a list of students with the ability to export to pdf') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function student_pdf_theme() {
+  return [
+    'student_pdf' => [
+      'render element' => 'children',
+    ],
+  ];
+}

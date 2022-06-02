@@ -1,0 +1,5 @@
+name: 'Student pdf'
+type: module
+description: 'The module implements an entity for a list of students with the ability to export to pdf'
+core: 8.x
+package: 'Custom'

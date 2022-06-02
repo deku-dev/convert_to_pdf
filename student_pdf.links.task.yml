@@ -1,0 +1,21 @@
+# Student routing definition
+students.settings_tab:
+  route_name: students.settings
+  title: 'Settings'
+  base_route: students.settings
+
+entity.students.canonical:
+  route_name: entity.students.canonical
+  base_route: entity.students.canonical
+  title: 'View'
+
+entity.student.edit_form:
+  route_name: entity.student.edit_form
+  base_route: entity.student.canonical
+  title: 'Edit'
+
+entity.student.delete_form:
+  route_name:  entity.student.delete_form
+  base_route:  entity.student.canonical
+  title: Delete
+  weight: 10
