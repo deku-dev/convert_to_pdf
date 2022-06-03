@@ -53,7 +53,11 @@ class StudentListBuilder extends EntityListBuilder {
         'class' => ['btn'],
       ],
     ];
-    $row['pdf_version'] = "";
+    $row['pdf_version'] = Link::createFromRoute(
+      t('PDF Version'),
+      'student_pdf.pdf_version',
+      ['student' => $entity->id()]
+    );
     return $row;
   }
 

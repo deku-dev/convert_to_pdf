@@ -40,9 +40,19 @@ class StudentPdfController extends ControllerBase {
 
   /**
    * Build pdf version.
+   * @param $student
+   *   Student entity.
+   * @return array
+   *   Render array.
    */
   public function build($student) {
-    return $student;
+    $render = [
+      '#theme' => 'student_pdf',
+      '#firstname' => $student->getFirstName(),
+      '#lastname' => $student->getLastName(),
+      '#content' => $student->getBio(),
+    ];
+    return $render;
   }
 
 }
