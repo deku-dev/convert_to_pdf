@@ -1,0 +1,4 @@
+student_pdf:
+  css:
+    theme:
+      css/student_pdf.css: {}
