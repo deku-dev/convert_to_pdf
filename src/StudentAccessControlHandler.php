@@ -27,8 +27,6 @@ class StudentAccessControlHandler extends EntityAccessControlHandler {
         if (!$entity->isPublished()) {
           return AccessResult::allowedIfHasPermission($account, 'view unpublished student entities');
         }
-
-
         return AccessResult::allowedIfHasPermission($account, 'view published student entities');
 
       case 'update':
@@ -50,6 +48,5 @@ class StudentAccessControlHandler extends EntityAccessControlHandler {
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
     return AccessResult::allowedIfHasPermission($account, 'add student entities');
   }
-
 
 }

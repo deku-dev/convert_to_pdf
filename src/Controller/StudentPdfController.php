@@ -6,16 +6,24 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\student_pdf\Entity\Student;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use mikehaertl\wkhtmlto\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\file\Entity\File;
-use Drupal\Core\ProxyClass\Render\BareHtmlPageRenderer;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Class StudentPdfController.
  */
 class StudentPdfController extends ControllerBase {
 
+  /**
+   * Module handler.
+   *
+   * @var Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
   /**
    * Current user object.
    *
@@ -24,23 +32,16 @@ class StudentPdfController extends ControllerBase {
   protected $currentUser;
 
   /**
-   * Render bare page.
-   *
-   * @var \Drupal\Core\ProxyClass\Render\BareHtmlPageRenderer
-   */
-  protected $renderPage;
-
-  /**
    * Construct.
    *
    * @param \Drupal\Core\Session\AccountProxyInterface $currentUser
    *   Current user data.
-   * @param \Drupal\Core\ProxyClass\Render\BareHtmlPageRenderer $renderPage
-   *   Render bare page service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+   *   Module handler.
    */
-  public function __construct(AccountProxyInterface $currentUser, BareHtmlPageRenderer $renderPage) {
+  public function __construct(AccountProxyInterface $currentUser, ModuleHandlerInterface $moduleHandler) {
     $this->currentUser = $currentUser;
-    $this->renderPage = $renderPage;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -55,35 +56,56 @@ class StudentPdfController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('current_user'),
-      $container->get('bare_html_page_renderer')
+      $container->get('module_handler')
     );
   }
 
   /**
    * Build pdf version.
-   * @param $student
+   *
+   * @param \Drupal\student_pdf\Entity\Student $student
    *   Student entity.
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   Render array.
    */
   public function build(Student $student) {
-    $renderedPage = $this->renderPage
-      ->renderBarePage([], $this->t('Student pdf'), 'student_pdf', [
-        '#firstname' => $student->getFirstName(),
-        '#lastname' => $student->getLastName(),
-        '#bio' => ['#markup' => $student->getBio()],
-        '#photo' => $this->getImageUri($student, 'photo'),
-        '#show_messages' => FALSE,
-      ])
-      ->getContent();
-    $pdf = new Pdf;
-    $pdf->addPage($renderedPage);
-    if (!$pdf->saveAs('./page.pdf')) {
-      $error = $pdf->getError();
-      // ... handle error here
-    }
-    return new Response($pdf);
+    $response = new Response();
+    $module_path = $this->moduleHandler->getModule('student_pdf')->getPath();
+    $debug = $this->config('students_pdf.settings')->get('debug');
+    $response->headers->add($debug ? [] : [
+      'Content-Type' => 'application/pdf',
+      'Cache-Control' => 'public, must-revalidate, max-age=0',
+      'Pragma' => 'no-cache',
+      'Expires' => '0',
+      'Content-Disposition' => 'inline; filename=' .
+        $student->getFirstName() . '-' . $student->id() . '.pdf'
+    ]);
+    // Using twig to render an html file.
+    // Folder module with templates.
+    $loader = new FilesystemLoader($module_path . "/templates/");
+    $twig = new Environment($loader);
+    // Set twig file to render.
+    $template = $twig->load('student-pdf.html.twig');
+    $rendered = $template->render([
+      'firstname' => $student->getFirstName(),
+      'lastname' => $student->getLastName(),
+      'bio' => $student->getBio(),
+      'photo' => $this->getImageUri($student, 'photo'),
+      '#show_messages' => FALSE,
+    ]
+    );
+
+    $options = [
+      "binary" => $module_path . "/binary/wkhtmltopdf",
+      "ignoreWarnings" => TRUE,
+      "tmpDir" => "public://",
+    ];
+    $pdf = new Pdf($options);
+    $pdf->addPage($rendered);
+    // Render html or pdf depending on the debug setting.
+    $response->setContent($debug ? $rendered : $pdf->toString());
+    return $response;
   }
 
   /**
@@ -107,4 +129,5 @@ class StudentPdfController extends ControllerBase {
     }
     return FALSE;
   }
+
 }

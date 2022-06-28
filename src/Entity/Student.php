@@ -188,7 +188,8 @@ class Student extends ContentEntityBase implements StudentInterface {
 
   /**
    * {@inheritdoc}
-   * @throws UnsupportedEntityTypeDefinitionException
+   *
+   * @throws Drupal\Core\Entity\Exception\UnsupportedEntityTypeDefinitionException
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array {
     $fields = parent::baseFieldDefinitions($entity_type);

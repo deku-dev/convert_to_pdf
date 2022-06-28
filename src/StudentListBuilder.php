@@ -46,17 +46,11 @@ class StudentListBuilder extends EntityListBuilder {
     $row['created'] = date("Y-m-d H:i:s", $entity->getCreated());
     $row['changed'] = date("Y-m-d H:i:s", $entity->getChanged());
     $row = $row + parent::buildRow($entity);
-    $button = [
-      '#type' => 'button',
-      '#value' => t('PDF Version'),
-      '#attributes' => [
-        'class' => ['btn'],
-      ],
-    ];
     $row['pdf_version'] = Link::createFromRoute(
       t('PDF Version'),
       'student_pdf.pdf_version',
-      ['student' => $entity->id()]
+      ['student' => $entity->id()],
+      ['attributes' => ['target' => '_blank']]
     );
     return $row;
   }

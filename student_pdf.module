@@ -22,20 +22,3 @@ function student_pdf_help($route_name, RouteMatchInterface $route_match) {
     default:
   }
 }
-
-/**
- * Implements hook_theme().
- */
-function student_pdf_theme() {
-  return [
-    'student_pdf' => [
-      'variables' => [
-        'firstname' => NULL,
-        'lastname' => NULL,
-        'bio' => NULL,
-        'photo' => NULL,
-      ],
-      'template' => 'student-pdf'
-    ],
-  ];
-}

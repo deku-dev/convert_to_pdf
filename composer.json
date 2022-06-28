@@ -10,4 +10,7 @@
         "issues": "https://www.drupal.org/project/issues/student_pdf",
         "source": "http://cgit.drupalcode.org/student_pdf",
     },
+    "require": {
+        "mikehaertl/phpwkhtmltopdf": "^2.5"
+    }
 }
